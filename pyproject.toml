@@ -7,10 +7,15 @@ authors = [
     { name = "Amol Jagtap", email = "amoljagtap17@gmail.com" }
 ]
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "fastapi[standard]>=0.142.2",
+]
 
 [project.scripts]
 fastapi-starter = "fastapi_starter:main"
+
+[tool.fastapi]
+entrypoint = "fastapi_starter:app"
 
 [build-system]
 requires = ["uv_build>=0.12.3,<0.13.0"]
