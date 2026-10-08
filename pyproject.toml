@@ -15,7 +15,8 @@ dependencies = [
 fastapi-starter = "fastapi_starter:main"
 
 [tool.fastapi]
-entrypoint = "fastapi_starter:app"
+# entrypoint = "fastapi_starter:app"
+entrypoint = "fastapi_oop:app"
 
 [build-system]
 requires = ["uv_build>=0.12.3,<0.13.0"]
