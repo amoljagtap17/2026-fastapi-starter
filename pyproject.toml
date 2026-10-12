@@ -13,6 +13,7 @@ dependencies = [
     "fastapi[standard]>=0.142.2",
     "passlib>=1.7.4",
     "psycopg2-binary>=2.9.13",
+    "pytest>=9.1.1",
     "python-jose[cryptography]>=3.5.0",
     "python-multipart>=0.0.32",
     "sqlalchemy>=2.1.4",
