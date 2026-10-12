@@ -5,7 +5,12 @@ from sqlalchemy.orm import DeclarativeBase
 
 SQLALCHEMY_DATABASE_URL = 'sqlite:///./todosapp.db'
 
+# SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:password@localhost/postgres'
+
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={'check_same_thread': False})
+
+# connect_args is for sqlite only, not for postgresql
+# engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
