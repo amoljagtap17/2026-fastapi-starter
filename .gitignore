@@ -10,3 +10,4 @@ wheels/
 .venv
 
 todosapp.db
+todosapp_test.db
