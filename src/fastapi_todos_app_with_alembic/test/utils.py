@@ -32,6 +32,9 @@ def override_get_current_user():
 
 client = TestClient(app)
 
+def todo_to_dict(todo):
+    return {column.name: getattr(todo, column.name) for column in Todo.__table__.columns}
+
 @pytest.fixture
 def test_todo():
     todo = Todo(
