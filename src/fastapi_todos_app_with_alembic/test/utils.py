@@ -38,7 +38,7 @@ def test_todo():
         title="Buy groceries",
         description="Need to buy milk, eggs, and bread!",
         priority=5,
-        complete=False,
+        completed=False,
         owner_id=1,
     )
 

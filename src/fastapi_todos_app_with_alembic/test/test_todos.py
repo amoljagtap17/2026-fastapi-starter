@@ -7,24 +7,26 @@ app.dependency_overrides[get_db] = override_get_db
 app.dependency_overrides[get_current_user] = override_get_current_user
 
 
+def todo_to_dict(todo):
+    return {column.name: getattr(todo, column.name) for column in Todo.__table__.columns}
+
+
 def test_read_all_authenticated(test_todo):
-    response = client.get("/")
+    response = client.get("/todos/")
     assert response.status_code == status.HTTP_200_OK
-    assert response.json() == [{'complete': test_todo.complete, 'title': test_todo.title,
-                                'description': test_todo.description, 'id': test_todo.id,
-                                'priority': test_todo.priority, 'owner_id': test_todo.owner_id}]
+    assert response.json() == [todo_to_dict(test_todo)]
 
 
 def test_read_one_authenticated(test_todo):
-    response = client.get("/todo/1")
+    response = client.get(f"/todos/{test_todo.id}")
     assert response.status_code == status.HTTP_200_OK
-    assert response.json() == {**test_todo.model_dump(), 'id': 1}
+    assert response.json() == todo_to_dict(test_todo)
 
 
 def test_read_one_authenticated_not_found():
-    response = client.get("/todo/999")
+    response = client.get("/todos/999")
     assert response.status_code == 404
-    assert response.json() == {'detail': 'Todo not found.'}
+    assert response.json() == {'detail': 'Todo not found'}
 
 
 def test_create_todo(test_todo):
@@ -32,10 +34,10 @@ def test_create_todo(test_todo):
         'title': test_todo.title,
         'description': test_todo.description,
         'priority': test_todo.priority,
-        'complete': test_todo.complete,
+        'completed': test_todo.completed,
     }
 
-    response = client.post('/todo', json=request_data)
+    response = client.post('/todos/', json=request_data)
     assert response.status_code == 201
 
     db = TestingSessionLocal()
@@ -43,7 +45,7 @@ def test_create_todo(test_todo):
     assert model.title == request_data.get('title')
     assert model.description == request_data.get('description')
     assert model.priority == request_data.get('priority')
-    assert model.complete == request_data.get('complete')
+    assert model.completed == request_data.get('completed')
 
 
 def test_update_todo(test_todo):
@@ -51,10 +53,10 @@ def test_update_todo(test_todo):
         'title':'Change the title of the todo already saved!',
         'description': 'Need to learn everyday!',
         'priority': 5,
-        'complete': False,
+        'completed': False,
     }
 
-    response = client.put('/todo/1', json=request_data)
+    response = client.put('/todos/1', json=request_data)
     assert response.status_code == 204
     db = TestingSessionLocal()
     model = db.query(Todo).filter(Todo.id == 1).first()
@@ -66,16 +68,16 @@ def test_update_todo_not_found(test_todo):
         'title':'Change the title of the todo already saved!',
         'description': 'Need to learn everyday!',
         'priority': 5,
-        'complete': False,
+        'completed': False,
     }
 
-    response = client.put('/todo/999', json=request_data)
+    response = client.put('/todos/999', json=request_data)
     assert response.status_code == 404
-    assert response.json() == {'detail': 'Todo not found.'}
+    assert response.json() == {'detail': 'Todo not found'}
 
 
 def test_delete_todo(test_todo):
-    response = client.delete('/todo/1')
+    response = client.delete('/todos/1')
     assert response.status_code == 204
     db = TestingSessionLocal()
     model = db.query(Todo).filter(Todo.id == 1).first()
@@ -83,6 +85,6 @@ def test_delete_todo(test_todo):
 
 
 def test_delete_todo_not_found():
-    response = client.delete('/todo/999')
+    response = client.delete('/todos/999')
     assert response.status_code == 404
-    assert response.json() == {'detail': 'Todo not found.'}
+    assert response.json() == {'detail': 'Todo not found'}
